@@ -21,8 +21,14 @@ async def on_message(message):
         return
 
     if message.content.startswith("$hello"):
-        await message.channel.send("Hello! I'm Alicia. Currently 16 years old ><~!")
+        await message.channel.send("Hello! I'm Alicia. Currently 16 years old ><~! (76B/56/81)")
         await message.channel.send("https://tenor.com/view/traffic-fbi-open-up-raid-gif-13450966")
+
+    if message.content.startswith("$sayd"):  # let bot to say and delete my message
+        message_to_send = message.content.replace("$sayd", "")
+        await message.delete()
+        await message.channel.send(message_to_send)
+
 
 
 
