@@ -1,11 +1,25 @@
-# testing if it works
-# ok so i just try to entered 2nd line
-# so whatever i dk will it crash or not, but i tried
+from pathlib import Path
 import discord
+import json
+
+from alicia_core.config import read_config, write_empty_config_json
 
 
 print("Starting up ...")
-print("Have you done Seed today?")
+
+config_path = Path.cwd() / "config.json"
+print(f"Reading configuration file from current directory ({config_path})")
+
+current_config = read_config(config_path)
+if (current_config == None):
+    write_empty_config_json()
+
+    print("Configuration file not present, and was generated.")
+    print("Please enter your token in the configuration file and restart Alicia.")
+
+    exit(-1)
+
+
 client = discord.Client()
 
 
@@ -24,14 +38,12 @@ async def on_message(message):
         await message.channel.send("Hello! I'm Alicia. Currently 16 years old ><~! (76B/56/81)")
         await message.channel.send("https://tenor.com/view/traffic-fbi-open-up-raid-gif-13450966")
 
-    if message.content.startswith("$sayd"):  # let bot to say and delete my message
-        message_to_send = message.content.replace("$sayd", "")
+    if message.content.startswith("$say"):  # let bot to say and delete my message
+        message_to_send = message.content.replace("$say", "")
         await message.delete()
         await message.channel.send(message_to_send)
 
 
-
-
-
+print("Connecting to Discord...")
 # put this at the end
-client.run("MjI3NzM3MTU5NDg5MTU5MTY4.V-EOwQ.boqpZAnQngkHFe8RX4vduem6Ca8")
+client.run(current_config.token)
