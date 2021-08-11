@@ -1,6 +1,7 @@
 from pathlib import Path
 import discord
 import logging
+import datetime
 
 # from alicia_core import commands_list
 from alicia_core.config import read_config, write_empty_config_json
@@ -35,6 +36,15 @@ async def say(message):
     await message.channel.send(message_to_send)
 
 
+async def ping(message):
+    time_received = message.created_at
+    msg2 = await message.channel.send("Pong!")
+    ping_a = msg2.created_at - time_received
+    ping_b = ping_a.microseconds
+    calculated_ping = ping_b / 1000
+    await msg2.edit(content=f"Pong! | {calculated_ping} ms")
+
+
 # starting the client
 client = discord.Client()
 
@@ -63,6 +73,11 @@ async def on_message(message):
         function_split = message.content.split(" ", 1)  # split input into list seperate by a space
         function_requested = function_split[0].replace("$", "")
         await globals()[function_requested](message)
+
+    elif "miku" in message.content and "ball" in message.content:
+        embed_message = discord.Embed(title="This is a Miku Ball! =P", url="https://i.imgur.com/Xc1tP0o.gif")
+        embed_message.set_image(url="https://i.imgur.com/Xc1tP0o.gif")
+        await message.channel.send(embed=embed_message)
 
 
 log(LogType.INFO, "Connecting to Discord...")
