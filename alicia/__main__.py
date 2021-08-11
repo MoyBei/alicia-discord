@@ -1,21 +1,27 @@
 from pathlib import Path
 import discord
 import json
+import logging
 
 from alicia_core.config import read_config, write_empty_config_json
+from alicia_core.logging import LogType, log
 
 
-print("Starting up ...")
+# error logging
+logging.basicConfig(level=logging.ERROR)
+
+
+log(LogType.INFO, "Starting up ...")
 
 config_path = Path.cwd() / "config.json"
-print(f"Reading configuration file from current directory ({config_path})")
+log(LogType.INFO, f"Reading configuration file from current directory ({config_path})")
 
 current_config = read_config(config_path)
 if (current_config == None):
     write_empty_config_json()
 
-    print("Configuration file not present, and was generated.")
-    print("Please enter your token in the configuration file and restart Alicia.")
+    log(LogType.ERROR, "Configuration file not present, and was generated.")
+    log(LogType.INFO, "Please enter your token in the configuration file and restart Alicia.")
 
     exit(-1)
 
@@ -25,8 +31,8 @@ client = discord.Client()
 
 @client.event  # register async event
 async def on_ready():
-    print("The bot is ready.")
-    print(f"Logged in as {client.user}.")
+    log(LogType.INFO, "The bot is ready.")
+    log(LogType.INFO, f"Logged in as {client.user}.")
 
 
 @client.event
@@ -44,6 +50,6 @@ async def on_message(message):
         await message.channel.send(message_to_send)
 
 
-print("Connecting to Discord...")
+log(LogType.INFO, "Connecting to Discord...")
 # put this at the end
 client.run(current_config.token)
