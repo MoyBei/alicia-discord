@@ -1,2 +1,2 @@
-commands_list = []
+commands_dict = {}
 

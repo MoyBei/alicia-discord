@@ -2,10 +2,13 @@ from pathlib import Path
 import discord
 import logging
 import datetime
+import importlib
 
 # from alicia_core import commands_list
 from alicia_core.config import read_config, write_empty_config_json
 from alicia_core.logging import LogType, log
+from alicia_core.command import execute_command
+
 
 # print(commands_list)
 # error logging
@@ -14,36 +17,26 @@ log(LogType.INFO, "Starting up ...")
 config_path = Path.cwd() / "config.json"
 log(LogType.INFO, f"Reading configuration file from current directory ({config_path})")
 
-current_config = read_config(config_path)
-if (current_config == None):
+current_config = None
+try:
+    current_config = read_config(config_path)
+except IOError as e:
+    log(LogType.ERROR, str(e))
+
     write_empty_config_json(config_path)
 
-    log(LogType.ERROR, "Configuration file not present, and was generated.")
+    log(LogType.INFO, "Empty configuration file generated.")
     log(LogType.INFO, "Please enter your token in the configuration file and restart Alicia.")
 
     exit(-1)
+except KeyError as e:
+    log(LogType.ERROR, str(e))
 
+    exit(-2)
 
-# test functions
-async def hello(message):
-    await message.channel.send("Hello! I'm Alicia. Currently 16 years old ><~! (76B/56/81)"
-                "https://tenor.com/view/traffic-fbi-open-up-raid-gif-13450966")
-
-
-async def say(message):
-    message_to_send = message.content.replace("$say", "")
-    await message.delete()
-    await message.channel.send(message_to_send)
-
-
-async def ping(message):
-    time_received = message.created_at
-    msg2 = await message.channel.send("Pong!")
-    ping_a = msg2.created_at - time_received
-    ping_b = ping_a.microseconds
-    calculated_ping = ping_b / 1000
-    await msg2.edit(content=f"Pong! | {calculated_ping} ms")
-
+# importing modules specified in the config
+for module_name in current_config.modules:
+    importlib.import_module(module_name)
 
 # starting the client
 client = discord.Client()
@@ -60,19 +53,8 @@ async def on_message(message):
     if message.author == client.user:  # to skip when the message author is bot itself
         return
 
-    # if message.content.startswith("$hello"):
-    #     await message.channel.send("Hello! I'm Alicia. Currently 16 years old ><~! (76B/56/81)")
-    #     await message.channel.send("https://tenor.com/view/traffic-fbi-open-up-raid-gif-13450966")
-    #
-    # if message.content.startswith("$say"):  # let bot to say and delete my message
-    #     message_to_send = message.content.replace("$say", "")
-    #     await message.delete()
-    #     await message.channel.send(message_to_send)
-
-    if message.content.startswith("$"):  # let bot to say and delete my message
-        function_split = message.content.split(" ", 1)  # split input into list seperate by a space
-        function_requested = function_split[0].replace("$", "")
-        await globals()[function_requested](message)
+    if message.content.startswith("$"):  
+        await execute_command(message.content.split(" ", 1)[0], message)
 
     elif "miku" in message.content and "ball" in message.content:
         embed_message = discord.Embed(title="This is a Miku Ball! =P", url="https://i.imgur.com/Xc1tP0o.gif")
