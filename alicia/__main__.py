@@ -1,6 +1,5 @@
 from pathlib import Path
 import discord
-import json
 import logging
 
 from alicia_core.config import read_config, write_empty_config_json
@@ -9,23 +8,20 @@ from alicia_core.logging import LogType, log
 
 # error logging
 logging.basicConfig(level=logging.ERROR)
-
-
 log(LogType.INFO, "Starting up ...")
-
 config_path = Path.cwd() / "config.json"
 log(LogType.INFO, f"Reading configuration file from current directory ({config_path})")
 
 current_config = read_config(config_path)
 if (current_config == None):
-    write_empty_config_json()
+    write_empty_config_json(config_path)
 
     log(LogType.ERROR, "Configuration file not present, and was generated.")
     log(LogType.INFO, "Please enter your token in the configuration file and restart Alicia.")
 
     exit(-1)
 
-
+# starting the client
 client = discord.Client()
 
 
