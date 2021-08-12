@@ -13,7 +13,6 @@ def register_command(command, function):
 
 async def execute_command(command, message):    
     if command in commands_dict:
-        log(LogType.INFO, f"Executing command `{command}`.")
         await commands_dict[command](message)
     else:
         return

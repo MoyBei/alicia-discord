@@ -1,0 +1,4 @@
+from alicia_core.message_trigger import register_per_message_trigger
+from .miku_ball import miku_ball
+
+register_per_message_trigger(miku_ball)

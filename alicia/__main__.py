@@ -8,6 +8,7 @@ import importlib
 from alicia_core.config import read_config, write_empty_config_json
 from alicia_core.logging import LogType, log
 from alicia_core.command import execute_command
+from alicia_core.message_trigger import trigger_registered_functions
 
 
 # print(commands_list)
@@ -53,13 +54,10 @@ async def on_message(message):
     if message.author == client.user:  # to skip when the message author is bot itself
         return
 
+    await trigger_registered_functions(message)
+
     if message.content.startswith("$"):  
         await execute_command(message.content.split(" ", 1)[0], message)
-
-    elif "miku" in message.content and "ball" in message.content:
-        embed_message = discord.Embed(title="This is a Miku Ball! =P", url="https://i.imgur.com/Xc1tP0o.gif")
-        embed_message.set_image(url="https://i.imgur.com/Xc1tP0o.gif")
-        await message.channel.send(embed=embed_message)
 
 
 log(LogType.INFO, "Connecting to Discord...")
