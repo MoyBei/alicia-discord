@@ -1,43 +1,51 @@
+# Alicia is born on 09 August 2021
+
 from pathlib import Path
 import discord
 import logging
 import datetime
 import importlib
 
-# from alicia_core import commands_list
 from alicia_core.config import read_config, write_empty_config_json
 from alicia_core.logging import LogType, log
 from alicia_core.command import execute_command
 from alicia_core.message_trigger import trigger_registered_functions
 
 
-# print(commands_list)
-# error logging
-logging.basicConfig(level=logging.ERROR)
-log(LogType.INFO, "Starting up ...")
-config_path = Path.cwd() / "config.json"
-log(LogType.INFO, f"Reading configuration file from current directory ({config_path})")
+# >------------------initializing bot------------------<
+def start_bot():
+    """Starting the bot and return current_config"""
+    # error logging
+    logging.basicConfig(level=logging.ERROR)
+    log(LogType.INFO, "Starting up ...")
+    config_path = Path.cwd() / "config.json"
+    log(LogType.INFO, f"Reading configuration file from current directory ({config_path})")
 
-current_config = None
-try:
-    current_config = read_config(config_path)
-except IOError as e:
-    log(LogType.ERROR, str(e))
+    chosen_config = None
+    try:
+        chosen_config = read_config(config_path)
+        return chosen_config
+    except IOError as e:
+        log(LogType.ERROR, str(e))
 
-    write_empty_config_json(config_path)
+        write_empty_config_json(config_path)
 
-    log(LogType.INFO, "Empty configuration file generated.")
-    log(LogType.INFO, "Please enter your token in the configuration file and restart Alicia.")
+        log(LogType.INFO, "Empty configuration file generated.")
+        log(LogType.INFO, "Please enter your token in the configuration file and restart Alicia.")
 
-    exit(-1)
-except KeyError as e:
-    log(LogType.ERROR, str(e))
+        exit(-1)
+    except KeyError as e:
+        log(LogType.ERROR, str(e))
 
-    exit(-2)
+        exit(-2)
 
+
+current_config = start_bot()
 # importing modules specified in the config
 for module_name in current_config.modules:
     importlib.import_module(module_name)
+
+# >------------------bot loaded------------------<
 
 # starting the client
 client = discord.Client()
@@ -56,7 +64,7 @@ async def on_message(message):
 
     await trigger_registered_functions(message)
 
-    if message.content.startswith("$"):  
+    if message.content.startswith("$"):
         await execute_command(message.content.split(" ", 1)[0], message)
 
 
