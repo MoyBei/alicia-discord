@@ -43,7 +43,7 @@ def start_bot():
 current_config = start_bot()
 # importing modules specified in the config
 for module_name in current_config.modules:
-    importlib.import_module(module_name)
+    importlib.import_module(f"modules.{module_name}")
 
 # >------------------bot loaded------------------<
 
