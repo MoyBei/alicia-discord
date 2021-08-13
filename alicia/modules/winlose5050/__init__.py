@@ -1,0 +1,4 @@
+from alicia_core.message_trigger import register_per_message_trigger
+from .winlose5050 import winlose5050
+
+register_per_message_trigger(winlose5050)
