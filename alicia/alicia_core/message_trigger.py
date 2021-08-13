@@ -11,6 +11,6 @@ def register_per_message_trigger(function):
                            f"registered to be called on every message, skipping.")
 
 
-async def trigger_registered_functions(message):
+async def trigger_registered_functions(message, client):
     for function in per_message_trigger_list:
-        await function(message)
+        await function(message, client)

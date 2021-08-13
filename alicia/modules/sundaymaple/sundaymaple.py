@@ -1,9 +1,10 @@
 from pathlib import Path
-from alicia_core.logging import LogType, log
 import discord
 
+from alicia_core.logging import LogType, log
 
-async def sundaymaple(message):
+
+async def sundaymaple(message, client):
     sundaymaple_file = Path(__file__).parent / "sundaymaple.md"
 
     messasge_to_send = ""

@@ -1,4 +1,4 @@
-async def ping(message):
+async def ping(message, client):
     time_received = message.created_at
     msg2 = await message.channel.send("Pong!")
     ping_a = msg2.created_at - time_received

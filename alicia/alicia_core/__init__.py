@@ -1,3 +1,5 @@
+current_config = {}
+
 # dictionary of commands -> function
 commands_dict = {}
 

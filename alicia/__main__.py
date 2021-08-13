@@ -6,6 +6,7 @@ import logging
 import datetime
 import importlib
 
+import alicia_core
 from alicia_core.config import read_config, write_empty_config_json
 from alicia_core.logging import LogType, log
 from alicia_core.command import execute_command
@@ -40,9 +41,9 @@ def start_bot():
         exit(-2)
 
 
-current_config = start_bot()
+alicia_core.current_config = start_bot()
 # importing modules specified in the config
-for module_name in current_config.modules:
+for module_name in alicia_core.current_config.modules:
     importlib.import_module(f"modules.{module_name}")
 
 # >------------------bot loaded------------------<
@@ -62,41 +63,12 @@ async def on_message(message):
     if message.author == client.user:  # to skip when the message author is bot itself
         return
 
-    await trigger_registered_functions(message)
+    await trigger_registered_functions(message, client)
 
-    # Function "status" that failed to create as module
-    # known bug = cant access config.json and client object from parent dir
-    # ERROR: relative import beyond top-level package
-    if message.content.startswith("$status"):
-        if message.author.id in current_config.owners:
-            split_content = message.content.split(" ", 2)
-            if len(split_content) != 3:
-                await message.channel.send("$status`space`[playing/streaming/listening/watching]`space`[content]")
-            elif split_content[1] == "playing":
-                await client.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.playing, name=split_content[2]))
-            elif split_content[1] == "streaming":
-                await client.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.streaming, name=split_content[2]))
-            elif split_content[1] == "listening":
-                await client.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.listening, name=split_content[2]))
-            elif split_content[1] == "watching":
-                await client.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.watching, name=split_content[2]))
-            else:
-                await message.channel.send(
-                    "Invalid parameters... Master, am i too BAKA to understand ur requests? :sob:")
-        else:
-            print(message.author.id)
-            await message.channel.send("You are not my master, I only listen to my master.")
-            await message.channel.send("https://tenor.com/view/kaguya-sama-love-is-war-chika-"
-                                       "fujiwara-laugh-giggle-evil-laugh-gif-17149742")
-
-    elif message.content.startswith("$"):
-        await execute_command(message.content.split(" ", 1)[0], message)
+    if message.content.startswith("$"):
+        await execute_command(message.content.split(" ", 1)[0], message, client)
 
 
 log(LogType.INFO, "Connecting to Discord...")
 # put this at the end
-client.run(current_config.token)
+client.run(alicia_core.current_config.token)

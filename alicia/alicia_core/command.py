@@ -11,9 +11,9 @@ def register_command(command, function):
     commands_dict[command] = function
 
 
-async def execute_command(command, message):    
+async def execute_command(command, message, client):    
     if command in commands_dict:
-        await commands_dict[command](message)
+        await commands_dict[command](message, client)
     else:
         return
     
