@@ -1,4 +1,5 @@
 import discord
+from random import randint
 
 from alicia_core import current_config
 
@@ -21,9 +22,14 @@ async def status(message, client):
             await client.change_presence(
                 activity=discord.Activity(type=discord.ActivityType.watching, name=split_content[2]))
         else:
-            await message.channel.send(
-                "Invalid parameters... Master, am i too BAKA to understand ur requests? :sob:\n\n" + 
-                "Usage instructions:\n`$status [playing/streaming/listening/watching] [content]`")
+            random_choice = randint(0, 1)
+            message_list = [
+                "Invalid parameters... Master, am i too BAKA to understand ur requests? :sob:\n\n"
+                "Usage instructions:\n`$status [playing/streaming/listening/watching] [content]`",
+                "Master...I think Im just smart, but you are the BAKA!\n"
+                "https://tenor.com/view/anime-mad-anime-mad-upset-rage-gif-17571061"]
+            await message.channel.send(message_list[random_choice])
+
     else:
         await message.channel.send("You are not my master, I only listen to my master.")
         await message.channel.send("https://tenor.com/view/kaguya-sama-love-is-war-chika-"
