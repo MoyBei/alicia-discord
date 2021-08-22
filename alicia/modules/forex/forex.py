@@ -5,6 +5,8 @@ API_LINK = "https://free.currconv.com/api/v7/convert"
 api_file = Path(__file__).parent / "forex_API_KEY.txt"
 API_KEY = Path(api_file).read_text().strip()
 
+# Documentation link: https://www.currencyconverterapi.com/docs
+
 
 def has_numbers(input_string):
     return any(char.isdigit() for char in input_string)
