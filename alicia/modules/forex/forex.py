@@ -38,7 +38,7 @@ async def forex(message, client):
         exchange_rate = response.json()[query]
         result = amount_to_exchange * exchange_rate
 
-        await message.channel.send(f"Currency Exachange: {amount_to_exchange:.2f} {currency_from.upper()} "
+        await message.channel.send(f"Currency Exchange: {amount_to_exchange:.2f} {currency_from.upper()} "
                                    f"-> {result:.2f} {currency_to.upper()}")
 
     except (IndexError, ValueError, KeyError):
