@@ -27,9 +27,6 @@ def read_config(config_path):
 
         config.owners = config_dict['owners']
 
-        # added forex API KEY
-        config.forex_API_KEY = config_dict["forex_API_KEY"]
-
         return config
 
     else:

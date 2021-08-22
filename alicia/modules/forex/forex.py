@@ -1,8 +1,9 @@
 import requests
-from alicia_core import current_config
+from pathlib import Path
 
 API_LINK = "https://free.currconv.com/api/v7/convert"
-API_KEY = current_config.forex_API_KEY
+api_file = Path(__file__).parent / "forex_API_KEY.txt"
+API_KEY = Path(api_file).read_text().strip()
 
 
 def has_numbers(input_string):
