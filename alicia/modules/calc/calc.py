@@ -3,5 +3,5 @@ async def calc(message, client):
     try:
         answer = eval(calc_str)
         await message.channel.send(f"Calculate: {calc_str} = {answer}")
-    except (TypeError, KeyError):
+    except (TypeError, KeyError, NameError):
         await message.channel.send(f"`$calc [what to calculate]`")
