@@ -11,3 +11,4 @@ async def choose(message, client):
         await message.channel.send(f"My choice:  {answer}")
     except (TypeError, KeyError, NameError):
         await message.channel.send(f"`$choose [choices separated with space]`")
+

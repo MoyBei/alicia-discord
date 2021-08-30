@@ -44,3 +44,6 @@ async def forex(message, client):
     except (IndexError, ValueError, KeyError):
         await message.channel.send("`$forex [amount] [fromCurrency] to [toCurrency]`\n"
                                    "[amount] and 'to' is optional, default amount: 1")
+
+    except requests.exceptions.HTTPError:
+        await message.channel.send("Sorry Server DOWN ><")
