@@ -14,7 +14,7 @@ async def dict(message, client):
     elif len(message_split) > 2:
         await message.channel.send("Only can search 1 word at a time.")
     else:
-        search_word = message_split[1]
+        search_word = message_split[1].lower()
         try:
             response = requests.get(url=f"{api_endpoint}{search_word}")
             response.raise_for_status()
